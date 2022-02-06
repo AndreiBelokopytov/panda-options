@@ -18,6 +18,17 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     plugins: [new TsconfigPathsPlugin()],
+    fallback: {
+      buffer: require.resolve("buffer/"),
+      crypto: require.resolve("crypto-browserify"),
+      stream: require.resolve("stream-browserify"),
+      events: require.resolve("events/"),
+      path: require.resolve("path-browserify"),
+      http: require.resolve("stream-http"),
+      https: require.resolve("https-browserify"),
+      url: require.resolve("url"),
+      os: require.resolve("os-browserify"),
+    },
   },
   module: {
     rules: [
