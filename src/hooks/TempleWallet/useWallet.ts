@@ -1,11 +1,11 @@
 import { TempleWallet, TempleDAppNetwork, TempleDAppPermission } from "@temple-wallet/dapp";
 import { usePermissions } from "./usePermissions";
 import { useAvailabilityCheck } from "./useAvailabilityCheck";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
+import { createContainer } from "unstated-next";
 
-export const useWallet = (
-  appName: string,
-  network: TempleDAppNetwork
+const useWallet = (
+  initialstate = { appName: "DApp", network: "hangzhounet" as TempleDAppNetwork }
 ): [
   state: {
     permissions: TempleDAppPermission;
@@ -19,15 +19,21 @@ export const useWallet = (
 
   const wallet = useRef<TempleWallet | undefined>(undefined);
 
-  const connect = async () => {
+  const connect = useCallback(async () => {
     if (availabilityState.isInitialized && availabilityState.isAvailable) {
       if (!wallet.current) {
-        wallet.current = new TempleWallet(appName, permissionsState.permissions);
+        wallet.current = new TempleWallet(initialstate.appName, permissionsState.permissions);
+        return wallet.current.connect(initialstate.network);
       }
-      return wallet.current.connect(network);
+      return wallet.current.connect(initialstate.network);
     }
-  };
-
+  }, [
+    wallet,
+    availabilityState.isInitialized,
+    availabilityState.isAvailable,
+    permissionsState.permissions,
+    permissionsState.isInitialized,
+  ]);
   return [
     {
       permissions: permissionsState.permissions,
@@ -37,3 +43,4 @@ export const useWallet = (
     wallet.current,
   ];
 };
+export const Wallet = createContainer(useWallet);
