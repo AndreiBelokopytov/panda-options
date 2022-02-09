@@ -33,6 +33,7 @@
     "eslint": "^8.4.1",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.4",
+    "lint-staged": "^12.3.3",
     "prettier": "^2.4.1",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "^4.5.5",
@@ -47,6 +48,7 @@
     "build": "webpack --config ./configs/webpack.prod.js",
     "profile-webpack": "webpack --config ./configs/webpack.profile.js",
     "lint": "eslint . --ext .ts,.tsx",
+    "lint-staged": "lint-staged",
     "prepare": "husky install"
   },
   "lint-staged": {
