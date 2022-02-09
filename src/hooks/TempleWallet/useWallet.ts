@@ -5,7 +5,7 @@ import { useCallback, useRef } from "react";
 import { createContainer } from "unstated-next";
 
 const useWallet = (
-  initialstate = { appName: "DApp", network: "hangzhounet" as TempleDAppNetwork }
+  initialstate = { appName: "DApp", network: <TempleDAppNetwork> "hangzhounet" }
 ): [
   state: {
     permissions: TempleDAppPermission;
@@ -27,13 +27,7 @@ const useWallet = (
       }
       return wallet.current.connect(initialstate.network);
     }
-  }, [
-    wallet,
-    availabilityState.isInitialized,
-    availabilityState.isAvailable,
-    permissionsState.permissions,
-    permissionsState.isInitialized,
-  ]);
+  }, [availabilityState.isAvailable, availabilityState.isInitialized, initialstate.appName, initialstate.network, permissionsState.permissions]);
   return [
     {
       permissions: permissionsState.permissions,
