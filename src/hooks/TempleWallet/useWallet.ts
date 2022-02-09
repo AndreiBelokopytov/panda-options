@@ -4,8 +4,13 @@ import { useAvailabilityCheck } from "./useAvailabilityCheck";
 import { useCallback, useRef } from "react";
 import { createContainer } from "unstated-next";
 
+type InitialState = {
+  appName: string;
+  network: TempleDAppNetwork;
+};
+
 const useWallet = (
-  initialstate = { appName: "DApp", network: <TempleDAppNetwork> "hangzhounet" }
+  initialstate: InitialState = { appName: "DApp", network: "hangzhounet" }
 ): [
   state: {
     permissions: TempleDAppPermission;
@@ -27,7 +32,13 @@ const useWallet = (
       }
       return wallet.current.connect(initialstate.network);
     }
-  }, [availabilityState.isAvailable, availabilityState.isInitialized, initialstate.appName, initialstate.network, permissionsState.permissions]);
+  }, [
+    availabilityState.isAvailable,
+    availabilityState.isInitialized,
+    initialstate.appName,
+    initialstate.network,
+    permissionsState.permissions,
+  ]);
   return [
     {
       permissions: permissionsState.permissions,
