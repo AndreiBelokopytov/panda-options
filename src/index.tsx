@@ -1,10 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { App } from './App';
+import { ChakraProvider } from "@chakra-ui/react";
+import React from "react";
+import ReactDOM from "react-dom";
+import { App } from "./App";
+import { Wallet } from "./hooks";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <ChakraProvider>
+    <Wallet.Provider>
+      <App />
+    </Wallet.Provider>
+  </ChakraProvider>,
+  document.getElementById("root")
 );

@@ -1,18 +1,14 @@
-import { useCallback } from "react";
+import { Button } from "@chakra-ui/button";
+import React, { useCallback } from "react";
+import { Wallet } from "~/hooks";
 
-type Props = {
-  address?: string;
-  connect?: () => void;
-};
-
-export const WalletButton = ({ address, connect }: Props) => {
+export const WalletButton = () => {
+  const [{ isInitialized, permissions, connect }] = Wallet.useContainer();
   const handleClick = useCallback(() => connect?.(), [connect]);
 
-  return address ? (
-    <span>{address}</span>
-  ) : (
-    <button type="button" onClick={handleClick}>
-      Connect
-    </button>
-  );
+  if (!isInitialized) {
+    return null;
+  }
+
+  return permissions?.pkh ? <Button>{permissions?.pkh}</Button> : <Button onClick={handleClick}>Connect</Button>;
 };
