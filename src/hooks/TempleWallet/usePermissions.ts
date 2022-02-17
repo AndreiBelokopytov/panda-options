@@ -31,7 +31,7 @@ export const usePermissions = () => {
     })();
 
     return () => unsubscribe?.();
-  }, []);
+  }, [setPermissions]);
 
   return state;
 };

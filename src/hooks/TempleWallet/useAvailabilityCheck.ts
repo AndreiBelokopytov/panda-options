@@ -30,7 +30,7 @@ export const useAvailabilityCheck = () => {
       }
     })();
     return () => unsubscribe();
-  }, []);
+  }, [setAvailable]);
 
   return state;
 };
