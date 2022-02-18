@@ -5,7 +5,7 @@ import React, { memo } from "react";
 
 type Props = {
   handleChange(val: number[]): void;
-  value?: number[];
+  value: number[];
 };
 
 export const RangeSliderDays = memo(({ handleChange, value }: Props) => {
@@ -26,7 +26,7 @@ export const RangeSliderDays = memo(({ handleChange, value }: Props) => {
         </RangeSliderTrack>
         <RangeSliderThumb index={0} />
       </RangeSlider>
-      {value}
+      {value[0] === 1 ? `${value[0]} day` : `${value[0]} days`}
     </Box>
   );
 });

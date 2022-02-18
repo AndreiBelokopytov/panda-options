@@ -9,11 +9,9 @@ type Props = {
 
 export const AmountField = memo(({ handleOptionType, value }: Props) => {
   return (
-    <>
       <InputGroup mt={5}>
         <InputLeftAddon children="XTZ" />
         <Input id="amount" placeholder="Amount" size="md" value={value} onChange={handleOptionType} />
       </InputGroup>
-    </>
   );
 });
