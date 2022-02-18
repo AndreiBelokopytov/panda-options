@@ -5,5 +5,11 @@
 tasks:
   - init: npm install && npm run build
     command: npm run start
+vscode:
+  extensions:
+    - eamodio.gitlens
+    - dbaeumer.vscode-eslint
+    - esbenp.prettier-vscode
+    - GitHub.vscode-pull-request-github
 
 
