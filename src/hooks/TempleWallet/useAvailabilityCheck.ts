@@ -1,36 +1,25 @@
-import { TempleWallet } from "@temple-wallet/dapp";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
+import { AccountInfo, DAppClient } from "@airgap/beacon-sdk";
 
-export const useAvailabilityCheck = () => {
+export const useCheckAccount = (dAppClient: DAppClient) => {
   const [state, setState] = useState<{
-    isAvailable?: boolean;
-    isInitialized?: boolean;
+    accountInfo?: AccountInfo;
+    isInitialized: boolean;
   }>({
-    isAvailable: undefined,
+    accountInfo: undefined,
     isInitialized: false,
   });
 
-  const setAvailable = useCallback((isAvailable: boolean) => {
-    setState({
-      isAvailable,
-      isInitialized: true,
-    });
-  }, []);
+  (async () => {
+    if (!state.isInitialized) {
+      const accountInfo = await dAppClient.getActiveAccount();
 
-  useEffect(() => {
-    let unsubscribe: () => void | undefined;
-    (async function () {
-      try {
-        const isAvailable = await TempleWallet.isAvailable();
-        setAvailable(isAvailable);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        unsubscribe = TempleWallet.onAvailabilityChange(setAvailable);
-      }
-    })();
-    return () => unsubscribe();
-  }, []);
+      setState({
+        accountInfo,
+        isInitialized: true,
+      });
+    }
+  })();
 
   return state;
 };

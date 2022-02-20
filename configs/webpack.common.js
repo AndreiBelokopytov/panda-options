@@ -19,7 +19,6 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
     plugins: [new TsconfigPathsPlugin()],
     fallback: {
-      buffer: require.resolve("buffer/"),
       crypto: require.resolve("crypto-browserify"),
       stream: require.resolve("stream-browserify"),
       events: require.resolve("events/"),
@@ -48,6 +47,9 @@ module.exports = {
   plugins: [
     new HtmlWebPackPlugin({
       template: path.join(APP_STRUCTURE.src, "index.html"),
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
     }),
   ],
 };

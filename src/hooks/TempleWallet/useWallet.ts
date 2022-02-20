@@ -1,51 +1,61 @@
-import { TempleWallet, TempleDAppNetwork, TempleDAppPermission } from "@temple-wallet/dapp";
-import { usePermissions } from "./usePermissions";
-import { useAvailabilityCheck } from "./useAvailabilityCheck";
-import { useCallback, useRef } from "react";
+import { useCheckAccount } from "./useAvailabilityCheck";
+import { useCallback, useState } from "react";
 import { createContainer } from "unstated-next";
+
+import { DAppClient, NetworkType, PermissionResponseOutput, AccountInfo, BeaconEvent } from "@airgap/beacon-sdk";
 
 type InitialState = {
   appName: string;
-  network: TempleDAppNetwork;
+  network: NetworkType;
 };
 
 const useWallet = (
-  initialstate: InitialState = { appName: "DApp", network: "hangzhounet" }
+  initialState: InitialState = { appName: "DApp", network: NetworkType.HANGZHOUNET }
 ): [
   state: {
-    permissions: TempleDAppPermission;
-    isInitialized?: boolean;
+    accountInfo?: AccountInfo;
+    isInitialized: boolean;
+    isConnected: boolean;
     connect: () => Promise<void>;
+    disconnect: () => Promise<void>;
   },
-  wallet: TempleWallet | undefined
+  dAppClient: DAppClient | undefined
 ] => {
-  const permissionsState = usePermissions();
-  const availabilityState = useAvailabilityCheck();
-
-  const wallet = useRef<TempleWallet | undefined>(undefined);
-
+  const dAppClient = new DAppClient({ name: initialState.appName, preferredNetwork: initialState.network });
+  const accountInfoCheck = useCheckAccount(dAppClient);
+  const [permissions, setPermissions] = useState<PermissionResponseOutput | undefined>(undefined);
+  const [connected, setConnected] = useState(false);
   const connect = useCallback(async () => {
-    if (availabilityState.isInitialized && availabilityState.isAvailable) {
-      if (!wallet.current) {
-        wallet.current = new TempleWallet(initialstate.appName, permissionsState.permissions);
-        return wallet.current.connect(initialstate.network);
+    if (accountInfoCheck.isInitialized) {
+      if (!accountInfoCheck.accountInfo) {
+        setPermissions(await dAppClient.requestPermissions({ network: { type: initialState.network } }));
       }
-      return wallet.current.connect(initialstate.network);
     }
-  }, [
-    availabilityState.isAvailable,
-    availabilityState.isInitialized,
-    initialstate.appName,
-    initialstate.network,
-    permissionsState.permissions,
-  ]);
+  }, [accountInfoCheck.isInitialized, accountInfoCheck.accountInfo]);
+  const disconnect = useCallback(async () => {
+    await dAppClient.clearActiveAccount();
+  }, []);
+
+  dAppClient
+    .subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, (data) => {
+      if (!data) {
+        setConnected(false);
+      } else {
+        setConnected(true);
+      }
+    })
+    .then();
+
   return [
     {
-      permissions: permissionsState.permissions,
-      isInitialized: availabilityState.isInitialized && permissionsState.isInitialized,
+      accountInfo: permissions?.accountInfo || accountInfoCheck.accountInfo || undefined,
+      isInitialized: accountInfoCheck.isInitialized,
+      isConnected: connected,
       connect,
+      disconnect,
     },
-    wallet.current,
+    dAppClient,
   ];
 };
+
 export const Wallet = createContainer(useWallet);
