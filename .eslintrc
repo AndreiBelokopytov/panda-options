@@ -11,9 +11,10 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended"
-
   ],
   "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error" ,
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/prefer-readonly": "error",
     "@typescript-eslint/naming-convention": [
