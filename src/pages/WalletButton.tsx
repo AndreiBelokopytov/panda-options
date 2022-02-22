@@ -1,4 +1,5 @@
 import { Button } from "@chakra-ui/button";
+import { Box } from "@chakra-ui/layout";
 import React, { useCallback } from "react";
 import { Wallet } from "~/hooks";
 
@@ -10,5 +11,9 @@ export const WalletButton = () => {
     return null;
   }
 
-  return permissions?.pkh ? <Button>{permissions?.pkh}</Button> : <Button onClick={handleClick}>Connect</Button>;
+  return (
+    <Box my={5}>
+      {permissions?.pkh ? <Button>{permissions?.pkh}</Button> : <Button onClick={handleClick}>Connect</Button>}
+    </Box>
+  );
 };

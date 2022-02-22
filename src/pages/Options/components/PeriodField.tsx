@@ -1,17 +1,17 @@
 import { Box } from "@chakra-ui/layout";
 import { FormLabel } from "@chakra-ui/react";
 import { RangeSlider, RangeSliderFilledTrack, RangeSliderThumb, RangeSliderTrack } from "@chakra-ui/slider";
-import React, { memo } from "react";
+import React from "react";
 
 type Props = {
   handleChange(val: number[]): void;
   value: number[];
 };
 
-export const RangeSliderDays = memo(({ handleChange, value }: Props) => {
+export const PeriodField = ({ handleChange, value }: Props) => {
   return (
     <Box mt={5}>
-      <FormLabel>Expiration</FormLabel>
+      <FormLabel>Period</FormLabel>
       <RangeSlider
         aria-label={["min", "max"]}
         defaultValue={[1]}
@@ -29,4 +29,4 @@ export const RangeSliderDays = memo(({ handleChange, value }: Props) => {
       {value[0] === 1 ? `${value[0]} day` : `${value[0]} days`}
     </Box>
   );
-});
+};

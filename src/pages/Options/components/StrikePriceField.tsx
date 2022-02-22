@@ -1,16 +1,16 @@
-import { FormLabel, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { StrikePriceData } from "~/hooks";
+import { FormLabel, Input, InputGroup, InputLeftAddon, InputRightAddon, Stack } from "@chakra-ui/react";
+import { CoinbasePriceData } from "~/api/coinbaseApi.types";
 
 type Props = {
-  data?: StrikePriceData;
+  data?: CoinbasePriceData;
 };
 
-export const StrikePriceField = React.memo(({ data }: Props) => {
-  const [costPrice, setCostPrice] = useState(0);
+export const StrikePriceField = ({ data }: Props) => {
+  const [optionCost, setOptionCost] = useState(0);
 
   useEffect(() => {
-    setCostPrice(Number(data?.amount) * 0.1);
+    setOptionCost(Number(data?.amount) * 0.1);
   }, [data?.amount]);
 
   return (
@@ -21,11 +21,11 @@ export const StrikePriceField = React.memo(({ data }: Props) => {
         <Input id="strikePrice" value={data?.amount} isReadOnly={true} />
         <InputRightAddon children="$" />
       </InputGroup>
-      <FormLabel htmlFor="costPrice">Cost Price</FormLabel>
+      <FormLabel htmlFor="optionCost">Option Cost</FormLabel>
       <InputGroup>
-        <Input id="costPrice" value={costPrice} isReadOnly={true} />
+        <Input id="optionCost" value={optionCost} isReadOnly={true} />
         <InputRightAddon children="$" />
       </InputGroup>
     </Stack>
   );
-});
+};

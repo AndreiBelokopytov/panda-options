@@ -1,6 +1,12 @@
+import { Container } from "@chakra-ui/layout";
 import React from "react";
-import { OptionsContainer } from "./pages/Options/OptionsContainer";
+import { BuyOptionPage, WalletButton } from "./pages";
 
 export const App = () => {
-  return <OptionsContainer />;
+  return (
+    <Container maxW="container.md" centerContent={true}>
+      <WalletButton />
+      <BuyOptionPage />
+    </Container>
+  );
 };
