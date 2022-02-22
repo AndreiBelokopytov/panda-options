@@ -8,66 +8,63 @@ type InitialState = {
   network: NetworkType;
 };
 
+type State = {
+  accountInfo?: AccountInfo;
+  isInitialized: boolean;
+  isConnected: boolean;
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+};
+
+let dAppClient: DAppClient | undefined;
+
 const useWallet = (
   initialState: InitialState = { appName: "DApp", network: NetworkType.HANGZHOUNET }
-): [
-  state: {
-    accountInfo?: AccountInfo;
-    isInitialized: boolean;
-    isConnected: boolean;
-    connect: () => Promise<void>;
-    disconnect: () => Promise<void>;
-  },
-  dAppClient: DAppClient | undefined
-] => {
-  const dAppClient = useRef<DAppClient>();
+): [state: State, dAppClient: DAppClient] => {
+  const initClient = () => new DAppClient({ name: initialState.appName, preferredNetwork: initialState.network });
+  const client = useRef<DAppClient>(dAppClient ?? initClient());
+  if (!dAppClient) {
+    dAppClient = client.current;
+  }
   const [isInitialized, setInitialized] = useState(false);
   const [accountInfo, setAccountInfo] = useState<AccountInfo | undefined>(undefined);
   const [isConnected, setConnected] = useState(false);
 
-  const disconnect = useCallback(async () => {
-    await dAppClient.current?.clearActiveAccount();
-  }, []);
-
   useEffect(() => {
     (async () => {
-      if (dAppClient.current) {
-        await disconnect();
-      }
-      dAppClient.current = new DAppClient({ name: initialState.appName, preferredNetwork: initialState.network });
       let activeAccount;
 
       try {
-        activeAccount = await dAppClient.current.getActiveAccount();
+        activeAccount = await client.current.getActiveAccount();
       } catch (e) {
         console.error(e);
       }
 
       setAccountInfo(activeAccount);
       setInitialized(true);
-      if (activeAccount) {
-        setConnected(true);
-      }
+      setConnected(!!activeAccount);
     })();
-  }, [initialState.appName, initialState.network, disconnect]);
+
+    client.current.subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, (data) => setConnected(!!data));
+  }, [initialState.appName, initialState.network]);
 
   const connect = useCallback(async () => {
-    if (dAppClient.current) {
-      try {
-        setAccountInfo(
-          (await dAppClient.current.requestPermissions({ network: { type: initialState.network } })).accountInfo
-        );
-      } catch (e) {
-        console.error(e);
-      }
+    try {
+      setAccountInfo(
+        (await client.current.requestPermissions({ network: { type: initialState.network } })).accountInfo
+      );
+    } catch (e) {
+      console.error(e);
     }
   }, [initialState.network]);
 
-  dAppClient.current
-    ?.subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, (data) => {
-      setConnected(!!data);
-    })
-    .then();
+  const disconnect = useCallback(async () => {
+    try {
+      await client.current.clearActiveAccount();
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   return [
     {
@@ -77,7 +74,7 @@ const useWallet = (
       connect,
       disconnect,
     },
-    dAppClient.current,
+    client.current,
   ];
 };
 
