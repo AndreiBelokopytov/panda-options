@@ -1,8 +1,7 @@
-import { checkActiveAccount } from "./checkActiveAccount";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createContainer } from "unstated-next";
 
-import { DAppClient, NetworkType, PermissionResponseOutput, AccountInfo, BeaconEvent } from "@airgap/beacon-sdk";
+import { DAppClient, NetworkType, AccountInfo, BeaconEvent } from "@airgap/beacon-sdk";
 
 type InitialState = {
   appName: string;
@@ -21,10 +20,14 @@ const useWallet = (
   },
   dAppClient: DAppClient | undefined
 ] => {
-  const dAppClient = useRef<DAppClient | undefined>(undefined);
-  const [activeAccountChecked, setActiveAccountChecked] = useState(false);
+  const dAppClient = useRef<DAppClient>();
+  const [isInitialized, setInitialized] = useState(false);
   const [accountInfo, setAccountInfo] = useState<AccountInfo | undefined>(undefined);
-  const [connected, setConnected] = useState(false);
+  const [isConnected, setConnected] = useState(false);
+
+  const disconnect = useCallback(async () => {
+    await dAppClient.current?.clearActiveAccount();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -32,14 +35,21 @@ const useWallet = (
         await disconnect();
       }
       dAppClient.current = new DAppClient({ name: initialState.appName, preferredNetwork: initialState.network });
-      const activeAccount = await checkActiveAccount(dAppClient.current);
+      let activeAccount;
+
+      try {
+        activeAccount = await dAppClient.current.getActiveAccount();
+      } catch (e) {
+        console.error(e);
+      }
+
       setAccountInfo(activeAccount);
-      setActiveAccountChecked(true);
+      setInitialized(true);
       if (activeAccount) {
         setConnected(true);
       }
     })();
-  }, [initialState.appName, initialState.network]);
+  }, [initialState.appName, initialState.network, disconnect]);
 
   const connect = useCallback(async () => {
     if (dAppClient.current) {
@@ -53,10 +63,6 @@ const useWallet = (
     }
   }, [initialState.network]);
 
-  const disconnect = useCallback(async () => {
-    await dAppClient.current?.clearActiveAccount();
-  }, []);
-
   dAppClient.current
     ?.subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, (data) => {
       setConnected(!!data);
@@ -65,9 +71,9 @@ const useWallet = (
 
   return [
     {
-      accountInfo: accountInfo,
-      isInitialized: activeAccountChecked,
-      isConnected: connected,
+      accountInfo,
+      isInitialized,
+      isConnected,
       connect,
       disconnect,
     },
