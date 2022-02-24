@@ -23,7 +23,7 @@ export const StrikePriceField = React.memo(({ data }: Props) => {
       </InputGroup>
       <FormLabel htmlFor="optionCost">Option Cost</FormLabel>
       <InputGroup>
-        <Input id="optionCost" value={optionCost} isReadOnly={true} />
+        <Input id="optionCost" value={optionCost.toFixed(2)} isReadOnly={true} />
         <InputRightAddon children="$" />
       </InputGroup>
     </Stack>

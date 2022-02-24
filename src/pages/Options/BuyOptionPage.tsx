@@ -6,7 +6,7 @@ import { OptionType } from "./options.types";
 import { useCoinbasePrice } from "~/hooks";
 
 export const BuyOptionPage = () => {
-  const [period, setPeriod] = useState(1);
+  const [period, setPeriod] = useState(15);
   const [optionType, setOptionType] = useState<OptionType>(OptionType.CALL);
   const [amount, setAmount] = useState<number | undefined>();
 

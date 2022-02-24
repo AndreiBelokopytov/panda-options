@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const AmountField = memo(({ onChange }: Props) => {
-  const [amount, setAmount] = useState<number | undefined>();
+  const [amount, setAmount] = useState<number | undefined>(1);
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +29,14 @@ export const AmountField = memo(({ onChange }: Props) => {
   return (
     <InputGroup mt={5}>
       <InputLeftAddon children="XTZ" />
-      <Input id="amount" placeholder="Amount" size="md" onChange={handleChange} onKeyPress={handlePressKey} />
+      <Input
+        id="amount"
+        placeholder="Amount"
+        size="md"
+        onChange={handleChange}
+        onKeyPress={handlePressKey}
+        defaultValue={1}
+      />
     </InputGroup>
   );
 });
