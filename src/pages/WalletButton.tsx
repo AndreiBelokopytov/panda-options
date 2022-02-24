@@ -1,19 +1,19 @@
-import { Button } from "@chakra-ui/button";
-import { Box } from "@chakra-ui/layout";
+import { Button } from "@chakra-ui/react";
 import React, { useCallback } from "react";
 import { Wallet } from "~/hooks";
 
 export const WalletButton = () => {
-  const [{ isInitialized, permissions, connect }] = Wallet.useContainer();
+  const [{ isInitialized, accountInfo, connect, disconnect, isConnected }] = Wallet.useContainer();
   const handleClick = useCallback(() => connect?.(), [connect]);
+  const handleDisconnectClick = useCallback(() => disconnect?.(), [disconnect]);
 
   if (!isInitialized) {
     return null;
   }
 
-  return (
-    <Box my={5}>
-      {permissions?.pkh ? <Button>{permissions?.pkh}</Button> : <Button onClick={handleClick}>Connect</Button>}
-    </Box>
+  return isConnected ? (
+    <Button onClick={handleDisconnectClick}>{accountInfo?.address}</Button>
+  ) : (
+    <Button onClick={handleClick}>Connect</Button>
   );
 };

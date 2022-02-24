@@ -4,9 +4,11 @@
   "private": true,
   "author": "Andrey Belokopytov",
   "dependencies": {
+    "@airgap/beacon-sdk": "^2.3.9",
     "@chakra-ui/react": "^1.8.3",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
+    "@taquito/beacon-wallet": "^11.2.0",
     "@taquito/taquito": "^11.2.0",
     "@temple-wallet/dapp": "^6.1.0",
     "axios": "^0.25.0",
