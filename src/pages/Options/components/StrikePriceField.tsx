@@ -6,7 +6,7 @@ type Props = {
   data?: CoinbasePriceData;
 };
 
-export const StrikePriceField = ({ data }: Props) => {
+export const StrikePriceField = React.memo(({ data }: Props) => {
   const [optionCost, setOptionCost] = useState(0);
 
   useEffect(() => {
@@ -28,4 +28,4 @@ export const StrikePriceField = ({ data }: Props) => {
       </InputGroup>
     </Stack>
   );
-};
+});
