@@ -1,11 +1,12 @@
-import { WalletButton } from "./components";
-import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "./theme";
+import { Container } from "@chakra-ui/layout";
+import React from "react";
+import { BuyOptionPage, WalletButton } from "./pages";
 
 export const App = () => {
   return (
-    <ChakraProvider theme={theme}>
+    <Container maxW="container.md" centerContent={true}>
       <WalletButton />
-    </ChakraProvider>
+      <BuyOptionPage />
+    </Container>
   );
 };
