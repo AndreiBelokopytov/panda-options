@@ -6,16 +6,17 @@ import { OptionType } from "./options.types";
 import { useCoinbasePrice } from "~/hooks";
 
 export const BuyOptionPage = () => {
-  const [period, setPeriod] = useState(1);
+  const PRECISION = 2;
+  const [period, setPeriod] = useState(15);
   const [optionType, setOptionType] = useState<OptionType>(OptionType.CALL);
-  const [amount, setAmount] = useState<number | undefined>();
+  const [amount, setAmount] = useState<number | undefined>(1);
 
   return (
     <FormControl w={300}>
       <OptionTypeButton onClick={setOptionType} value={optionType} />
-      <AmountField onChange={setAmount} />
+      <AmountField onChange={setAmount} defaultValue={amount} />
       <PeriodField onChange={setPeriod} value={period} />
-      <StrikePriceField data={useCoinbasePrice().data} />
+      <StrikePriceField data={useCoinbasePrice().data} precision={PRECISION} />
       <Button mt={4} type="submit">
         Buy Option
       </Button>

@@ -3,10 +3,11 @@ import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 
 type Props = {
   onChange?: (val?: number) => void;
+  defaultValue?: number;
 };
 
-export const AmountField = memo(({ onChange }: Props) => {
-  const [amount, setAmount] = useState<number | undefined>();
+export const AmountField = memo(({ onChange, defaultValue }: Props) => {
+  const [amount, setAmount] = useState<number | undefined>(1);
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +30,14 @@ export const AmountField = memo(({ onChange }: Props) => {
   return (
     <InputGroup mt={5}>
       <InputLeftAddon children="XTZ" />
-      <Input id="amount" placeholder="Amount" size="md" onChange={handleChange} onKeyPress={handlePressKey} />
+      <Input
+        id="amount"
+        placeholder="Amount"
+        size="md"
+        onChange={handleChange}
+        onKeyPress={handlePressKey}
+        defaultValue={defaultValue}
+      />
     </InputGroup>
   );
 });
