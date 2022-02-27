@@ -4,9 +4,10 @@ import { CoinbasePriceData } from "~/api/coinbaseApi.types";
 
 type Props = {
   data?: CoinbasePriceData;
+  precision: number;
 };
 
-export const StrikePriceField = React.memo(({ data }: Props) => {
+export const StrikePriceField = React.memo(({ data, precision }: Props) => {
   const [optionCost, setOptionCost] = useState(0);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export const StrikePriceField = React.memo(({ data }: Props) => {
       </InputGroup>
       <FormLabel htmlFor="optionCost">Option Cost</FormLabel>
       <InputGroup>
-        <Input id="optionCost" value={optionCost.toFixed(2)} isReadOnly={true} />
+        <Input id="optionCost" value={optionCost.toFixed(precision)} isReadOnly={true} />
         <InputRightAddon children="$" />
       </InputGroup>
     </Stack>

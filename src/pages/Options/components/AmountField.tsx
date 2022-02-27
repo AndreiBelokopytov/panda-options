@@ -3,9 +3,10 @@ import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 
 type Props = {
   onChange?: (val?: number) => void;
+  defaultValue?: number;
 };
 
-export const AmountField = memo(({ onChange }: Props) => {
+export const AmountField = memo(({ onChange, defaultValue }: Props) => {
   const [amount, setAmount] = useState<number | undefined>(1);
 
   const handleChange = useCallback(
@@ -35,7 +36,7 @@ export const AmountField = memo(({ onChange }: Props) => {
         size="md"
         onChange={handleChange}
         onKeyPress={handlePressKey}
-        defaultValue={1}
+        defaultValue={defaultValue}
       />
     </InputGroup>
   );
